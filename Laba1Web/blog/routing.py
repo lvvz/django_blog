@@ -4,4 +4,5 @@ from . import consumers
 
 urlpatterns = [
     re_path(r'chat/$', consumers.ChatConsumer.as_asgi()),
+    re_path(r'callbacks/$', consumers.CallbackConsumer.as_asgi()),
 ]

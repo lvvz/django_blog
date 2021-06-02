@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, HttpResponse
 from django.db.utils import IntegrityError
 from django.utils.decorators import method_decorator
 from django.views.generic import View, ListView, DetailView, FormView
@@ -13,6 +13,7 @@ from django.contrib.auth.forms import AuthenticationForm
 
 from . import models as M
 from . import forms as F
+from .tasks import comments_cleanup
 
 
 def index(request):
@@ -171,15 +172,25 @@ class NewPostView(LoginRequiredMixin, CreateView):
 def about_view(request):
     return render(request, "blog/about_page.html")
 
+
 @login_required
 def chat_view(request):
     context = dict()
     context['my_user'] = request.user
     return render(request, 'blog/chat_page.html', context)
 
+
 @login_required
 def connected_view(request):
     if request.user.is_staff:
         connected_users = M.ConnectedUser.objects.all()
         return render(request, 'blog/connected_users_page.html', {'connected_users': connected_users})
+    return redirect("blog:index")
+
+
+@login_required
+def tasks_view(request):
+    if request.user.is_staff:
+        # n = comments_cleanup.delay() # .get()
+        return render(request, 'blog/tasks_page.html')  # HttpResponse("Removed %d comments" % n)
     return redirect("blog:index")

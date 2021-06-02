@@ -1,4 +1,5 @@
 import json
+import random
 
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
@@ -74,4 +75,55 @@ class ChatConsumer(WebsocketConsumer):
             'message': event['message'],
             'author': event['sender'],  # renamed to distinct
             'class': event['class'],
+        }))
+
+
+class CallbackConsumer(WebsocketConsumer):
+    def connect(self):
+        # self.room_name = self.scope['url_route']['kwargs']['room_name']
+        self.room_group_name = "callbacks"
+        async_to_sync(self.channel_layer.group_add)(
+            self.room_group_name,
+            self.channel_name
+        )
+        if isinstance(self.scope['user'], auth_models.User):
+            self.username = self.scope['user'].username
+        else:
+            self.username = "worker %d" % random.randrange(1, 100)
+        self.accept()
+        """ if isinstance(self.scope['user'], auth_models.User):
+            ConnectedUser.objects.update_or_create(user=self.scope['user'])
+            self.username = self.scope['user'].username
+            self.user_pk = self.scope['user'].pk
+            self.accept()
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    'type': 'chat_message',
+                    'message': "User %s has joined chat" % self.username,
+                    'sender': 'System',
+                    'class': 'system'
+                }
+            )"""
+
+    def disconnect(self, close_code):
+        # Leave room group
+        async_to_sync(self.channel_layer.group_discard)(
+            self.room_group_name,
+            self.channel_name
+        )
+
+    def receive(self, text_data):
+        data = json.loads(text_data)
+        data['type'] = 'task_callback'
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,
+            data
+        )
+
+    def task_callback(self, event):
+        # Send message to WebSocket
+        self.send(text_data=json.dumps({
+            'message': event['message'],
+            'time': event['time'],
         }))
