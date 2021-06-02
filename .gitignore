@@ -156,4 +156,5 @@ Thumbs.db #thumbnail cache on Windows
 .prof
 db_setting.json
 secret_key.json
+.idea
 # End of https://www.toptal.com/developers/gitignore/api/django

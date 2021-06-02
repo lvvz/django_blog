@@ -1,5 +1,6 @@
 from django.urls import path, include
 from . import views
+from .models import ConnectedUser
 
 app_name = 'blog'
 urlpatterns = [
@@ -17,5 +18,8 @@ urlpatterns = [
     path('post/<int:pk>/delete', views.delete_post, name='delete_post'),
     path('post/<int:pk>/vote', views.post_vote, name='vote'),
 
-
+    path('chat', views.chat_view, name='chat'),
+    path('chat/connected', views.connected_view, name='connected'),
 ]
+
+ConnectedUser.objects.all().delete()
