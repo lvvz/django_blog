@@ -1,0 +1,40 @@
+{% extends "./base.html" %}
+
+{% block header %} Profile {% endblock %}
+
+{% block main %}
+    {% if chosen_user and blog_user %}
+    <table class=" table ">
+        <tr>
+            <td>Username:</td>
+            <td>{{chosen_user.username}}</td>
+        </tr>
+        <tr>
+            <td>E-mail:</td>
+            <td>{{chosen_user.email}}</td>
+        </tr>
+        <tr>
+            <td>First name:</td>
+            <td>{{chosen_user.first_name}}</td>
+        </tr>
+        <tr>
+            <td>Last Name:</td>
+            <td>{{chosen_user.last_name}}</td>
+        </tr>
+        <tr>
+            <td>Gender:</td>
+            <td>{{blog_user.gender}}</td>
+        </tr>
+        <tr>
+            <td>Birthday:</td>
+            <td>{{blog_user.birth_date}}</td>
+        </tr>
+    </table>
+
+    {% if user.is_authenticated and user.id == chosen_user.id %}
+    <div class="container", style="padding: 20px">
+        <a class="btn btn-secondary" href="{% url 'blog:logout' %}">Logout</a>
+    </div>
+    {% endif %}
+{% endif %}
+{% endblock %}

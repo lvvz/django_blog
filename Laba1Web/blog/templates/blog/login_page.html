@@ -1,0 +1,17 @@
+{% extends "./base.html" %}
+
+{% block header %} Login page {% endblock %}
+
+{% block main %}
+
+<div class="row justify-content-center w-100 ">
+    <form method="post" action="{% url 'blog:login' %}" class="m-sm-4">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ next }}">
+    <table>
+    {{ form.as_table}}
+    </table>
+    <input type="submit" class="btn btn-primary" value="Log in">
+    </form>
+</div>
+{% endblock %}
