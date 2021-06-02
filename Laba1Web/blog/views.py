@@ -170,3 +170,16 @@ class NewPostView(LoginRequiredMixin, CreateView):
 
 def about_view(request):
     return render(request, "blog/about_page.html")
+
+@login_required
+def chat_view(request):
+    context = dict()
+    context['my_user'] = request.user
+    return render(request, 'blog/chat_page.html', context)
+
+@login_required
+def connected_view(request):
+    if request.user.is_staff:
+        connected_users = M.ConnectedUser.objects.all()
+        return render(request, 'blog/connected_users_page.html', {'connected_users': connected_users})
+    return redirect("blog:index")

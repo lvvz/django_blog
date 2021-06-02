@@ -1,0 +1,17 @@
+{% extends "./base.html" %}
+{% block header %} Connected to chat users {% endblock %}
+
+{% block main %}
+<h5 class="text-center">Users currently online in chat: </h5>
+<div class="row justify-content-center" >
+    <ul class="list-group border" >
+        {% for user in connected_users %}
+        <li class="list-group-item">
+            <a href="{% url 'blog:profile' user.user.id %}" target="_blank"> {{user.user.username}}  -- Connected: {{ user.connected }} </a>
+        </li>
+        {% empty %}
+            <a class="list-group-item"> Chat is empty </a>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

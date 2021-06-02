@@ -1,0 +1,66 @@
+{% extends "./base.html" %}
+{% block header %} Chat {% endblock %}
+
+{% block main %}
+<div class="row justify-content-center" >
+    {% if user.is_staff %}
+    <h5 class="text-center"> <a href="{% url 'blog:connected'%}"> Users currently online in chat</a></h5>
+    {% endif %}
+    <div class="container m-2 border" id="messages" style="min-height: 85vh; max-height: 500px; overflow: auto"
+    </div>
+</div>
+<div class="form-row">
+    <div class="col-md-11"><input id="chat-message-input" type="text" class="form-control mb-sm-2" size="100" ></div>
+    <div class="col-md-1"><input id="chat-message-submit" type="button" class="btn btn-primary" value="Send"></div>
+</div>
+{{ my_user.username |json_script:"user-field" }}
+<script>
+    my_user = JSON.parse(document.getElementById('user-field').textContent)
+
+    const chatSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/chat/'
+    );
+
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        const messages = document.querySelector('#messages')
+        var new_row = document.createElement("DIV");
+        new_row.classList.add("row")
+        new_row.style.borderBottom = '1px solid lightgrey';
+        if (data.author == my_user)
+            new_row.style.backgroundColor = '#FFEFD5';
+        else if (data.message.includes("@" + my_user))
+            new_row.style.backgroundColor = '#AFEEEE';
+        else if (data.class == "system")
+            new_row.style.backgroundColor = '#E6E6FA';
+        else if (data.class == "admin")
+            new_row.style.backgroundColor = '#D9EEE1';
+
+        new_row.innerHTML = "<div class=\"col-2\"><b> " + data.author + " </b></div><div class=\"col-10\"> " + data.message + "</div>";
+        messages.appendChild(new_row);
+    };
+
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    document.querySelector('#chat-message-input').focus();
+    document.querySelector('#chat-message-input').onkeyup = function(e) {
+        if (e.keyCode === 13) {  // enter, return
+            document.querySelector('#chat-message-submit').click();
+        }
+    };
+
+    document.querySelector('#chat-message-submit').onclick = function(e) {
+        const messageInputDom = document.querySelector('#chat-message-input');
+        const message = messageInputDom.value;
+        chatSocket.send(JSON.stringify({
+            'message': message,
+            'sender': my_user
+        }));
+        messageInputDom.value = '';
+    };
+</script>
+{% endblock %}

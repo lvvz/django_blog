@@ -46,3 +46,12 @@ class Vote(models.Model):
 
     def __str__(self):
         return self.post.title + ' ' + self.user.username + ' ' + str(self.upvote)
+
+
+class ConnectedUser(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+                                related_name='connected_user', default=0, editable=False, unique=True)
+    connected = models.TimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.username

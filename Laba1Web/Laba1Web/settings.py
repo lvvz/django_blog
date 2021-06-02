@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'channels',
     'drf_spectacular',
     'blog'
 ]
@@ -75,7 +76,12 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'Laba1Web.wsgi.application'
-
+ASGI_APPLICATION = "Laba1Web.asgi.application"
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
