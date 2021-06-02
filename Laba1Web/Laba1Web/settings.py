@@ -87,7 +87,14 @@ CHANNEL_LAYERS = {
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 DATABASES = {}
 with open("Laba1Web/db_setting.json") as db_file:
-    DATABASES = json.load(db_file)
+    conf = json.load(db_file)
+    DATABASES = conf["db"]
+    EMAIL_HOST_USER = conf["mail_user"]
+    EMAIL_HOST_PASSWORD = conf["mail_pass"]
+
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

@@ -1,0 +1,34 @@
+{% extends "./base.html" %}
+{% block header %} Chat {% endblock %}
+
+{% block main %}
+<div class="row justify-content-center" >
+    <h6>List of currently completed tasks</h6>
+    <div class="container m-2 border" id="messages" style="min-height: 85vh; max-height: 500px; overflow: auto">
+    </div>
+</div>
+{{ my_user.username |json_script:"user-field" }}
+<script>
+    my_user = JSON.parse(document.getElementById('user-field').textContent)
+
+    const chatSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/callbacks/'
+    );
+
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        const messages = document.querySelector('#messages')
+        var new_row = document.createElement("DIV");
+        new_row.classList.add("row")
+        new_row.style.borderBottom = '1px solid lightgrey';
+        new_row.innerHTML = "<div class=\"col-2\"><b> [" + data.time + "] </b></div><div class=\"col-10\"> " + data.message + "</div>";
+        messages.appendChild(new_row);
+    };
+
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+</script>
+{% endblock %}

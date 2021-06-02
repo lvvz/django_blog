@@ -20,6 +20,7 @@ urlpatterns = [
 
     path('chat', views.chat_view, name='chat'),
     path('chat/connected', views.connected_view, name='connected'),
+    path('monitor', views.tasks_view, name='tasks_monitor'),
 ]
 
 ConnectedUser.objects.all().delete()
