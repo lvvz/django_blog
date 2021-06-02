@@ -1,0 +1,32 @@
+{% extends "./base.html" %}
+
+{% block header %} All posts {% endblock %}
+
+{% block main %}
+<h3 class="text-center" style="padding:10px"> Browse all posts </h3>
+<div class="container" >
+    {% for post in all_posts %}
+        <div class="media m-1 border">
+            <div class="media-body pl-3">
+                <h4><a href="{% url 'blog:blogpost' post.id %}" >{{ post.title }}</a></h4>
+                <div class="d-flex justify-content-between px-2">By {{ post.author.username }} <small><i>Posted {{ post.posted }}</i></small></div>
+            </div>
+        </div>
+    {% empty %}
+        <p>No posts</p>
+    {% endfor %}
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page=1">&laquo; First</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}"><-</a></li>
+        {% endif %}
+        <li class="page-link">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </li>
+        {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}"> -></a></li>
+        <li class="page-item"> <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}"> Last &raquo;</a> </li>
+        {% endif %}
+    </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "./base.html" %}
+
+{% block header %} Sick blog {% endblock %}
+
+{% block main %}
+<h3 class="text-center p-2"> Fresh posts: </h3>
+<div class="container" >
+    {% for post in last_posts %}
+        <div class="media m-1 border">
+            <div class="media-body pl-3 ">
+                <h4 ><a href="{% url 'blog:blogpost' post.id %}" >{{ post.title }}</a> </h4>
+                <div class="d-flex justify-content-between px-2">By {{ post.author.username }} <small><i>Posted {{ post.posted }}</i></small></div>
+            </div>
+        </div>
+    {% empty %}
+        <p>No posts</p>
+    {% endfor %}
+    <a href="{% url 'blog:archive' %}"> More posts > </a>
+</div>
+{% endblock %}

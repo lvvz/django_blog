@@ -1,0 +1,14 @@
+{% extends "./base.html" %}
+
+{% block header %} New post {% endblock %}
+
+{% block main %}
+<div class="row justify-content-center">
+    <h5 class="text-center">Create a new post</h5>
+    <form method="post" action="{% url 'blog:new_post' %}" class="w-100 mx-1 mx-sm-4">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" class="btn btn-primary" value="Post">
+    </form>
+</div>
+{% endblock %}
